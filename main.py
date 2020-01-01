@@ -2,7 +2,7 @@ from Bio.Alphabet import generic_dna
 from Bio.Seq import Seq
 from Bio.SeqRecord import SeqRecord
 from Bio.Align import MultipleSeqAlignment
-from Bio.Phylo.TreeConstruction import DistanceCalculator, DistanceTreeConstructor
+from Bio.Phylo.TreeConstruction import DistanceCalculator, DistanceTreeConstructor, DistanceMatrix
 from Bio import Phylo
 from Bio import pairwise2
 from Bio.pairwise2 import format_alignment
@@ -22,7 +22,7 @@ def normalized_distance(word1, word2):
 		dis = dis / max( len(word1), len(word2) )
 	return dis
 
-def max_pairwise_align(w1, w2):
+def generate_tree()():
 
 	#print(translator.translate('house', dest='it').text.lower())
 	#print(googletrans.LANGUAGES)
@@ -45,7 +45,6 @@ def max_pairwise_align(w1, w2):
 	Dis = [[0 for x in range(W)] for y in range(W)] 
 
 	# Run translation
-	words = ["was", "many", "make", "long"]
 	word = "car"
 	src = "en"
 	Tran = index.copy()
@@ -73,23 +72,22 @@ def max_pairwise_align(w1, w2):
 			
 	Dis2 = []
 	for x in range(W):
-		Dis2.append( Dis[x][0:x] )
+		Dis2.append( Dis[x][0:x] + [0] )
 
-	dm = DistanceMatrix(names=languages.keys(), matrix=Dim2)
+	dm = DistanceMatrix(names=list(languages.values()), matrix=Dis2)
 	draw_tree(dm)
 
 
 def draw_tree(distance_matrix, model='upgma'):
 	constructor = DistanceTreeConstructor()
 	if model == 'upgma':
-		tree = constructor.upgma(dm)
+		tree = constructor.upgma(distance_matrix)
 	elif model == 'nj':
-		tree = constructor.nj(dm)
+		tree = constructor.nj(distance_matrix)
 	else:
 		print("Error model")
 		exit(1)
 	print(tree)
 	Phylo.draw(tree)
 
-max_pairwise_align("a", "aa")
-#draw_tree(dm)
+generate_tree()
